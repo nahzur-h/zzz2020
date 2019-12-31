@@ -103,6 +103,7 @@ object DayJsonMain {
                     println("=== handleDayNewList doOnSuccess === " + "list:" + list.size)
                     val newList = handleAllDayNewList(list)
                     isHandleAllDayNewListSuccess = true
+                    isHandleBackupDayNewListSuccess = true
                     if (isHandleAllDayNewListSuccess && isHandleBackupDayNewListSuccess) {
                         dayNewModelListJsonFile(newList, dayListFile.absolutePath, mainGSon)
                     } else {
