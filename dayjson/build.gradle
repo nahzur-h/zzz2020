@@ -1,0 +1,120 @@
+apply plugin: 'java-library'
+apply plugin: "kotlin"
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${versions.kotlin}"
+    implementation "io.reactivex.rxjava2:rxjava:${versions.rxjava2}"
+    implementation "com.squareup.retrofit2:retrofit:${versions.retrofit}"
+    implementation "com.squareup.retrofit2:converter-gson:${versions.retrofit}"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:${versions.retrofit}"
+}
+
+repositories {
+    mavenCentral()
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
+
+sourceCompatibility = "1.8"
+targetCompatibility = "1.8"
+
+task createDayJson(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = "com.feature.dayjson.DayJsonMain"
+}
+
+task updateDayJson() {
+    dependsOn("createDayJson")
+    doLast {
+        exeDayJsonGitCmd()
+    }
+}
+
+void exeDayJsonGitCmd() {
+    String currentTimeText = getCurrentTimeText()
+    println("exeDayJsonGitCmd called...  currentTimeText: " + currentTimeText)
+    exeDayJsonGitAdd()
+    exeDayJsonGitCommit(currentTimeText)
+    exeDayJsonGitFetch()
+    exeDayJsonGitRebaseMaster()
+    exeDayJsonGitPushMaster()
+}
+
+void exeDayJsonGitFetch() {
+    println("exeDayJsonGitFetch called...")
+    exec {
+        workingDir '../'
+        commandLine 'git', 'fetch', 'origin'
+    }
+}
+
+void exeDayJsonGitRebaseMaster() {
+    println("exeDayJsonGitRebaseMaster called...")
+    exec {
+        workingDir '../'
+        commandLine 'git', 'rebase', 'origin/master'
+    }
+}
+
+void exeDayJsonGitAdd() {
+    println("exeDayJsonGitAdd called...")
+    exec {
+        workingDir '../'
+        commandLine 'git', 'add', '.'
+    }
+}
+
+private static List<String> getCommitContentList() {
+    List<String> contentList = new ArrayList<String>()
+    contentList.add("update today news list and save to file")
+    contentList.add("add one day data to news list")
+    contentList.add("update something new data list to json")
+    contentList.add("add latest news to remote file")
+    contentList.add("fix old news list refresh to latest news")
+    contentList.add("add something news to remote file")
+    contentList.add("update idayily current day page data to remote")
+    contentList.add("add something idayily news list page")
+    contentList.add("opt news page and old page to data list")
+    contentList.add("add world news data and refresh remote file")
+    return contentList
+}
+
+private static String getRandomCommitText() {
+    String url = "http://whatthecommit.com/index.txt"
+    def client = new okhttp3.OkHttpClient()
+    def request = new okhttp3.Request.Builder().url(url).build()
+    def response = client.newCall(request).execute()
+    String commitText = response.body().string()
+    response.close()
+    return commitText
+}
+
+void exeDayJsonGitCommit(String currentTimeText) {
+    println("exeDayJsonGitCommit called...")
+    String commitContent = getRandomCommitText()
+    println("currentTimeText:" + currentTimeText)
+    println("commitContent:" + commitContent)
+    exec {
+        workingDir '../'
+        commandLine 'git', 'commit', '-m', '' + commitContent
+    }
+}
+
+void exeDayJsonGitPushMaster() {
+    println("exeDayJsonGitPushMaster called...")
+    exec {
+        workingDir '../'
+        commandLine 'git', 'push', 'origin', 'master:master'
+    }
+}
+
+private static def getCurrentTimeText() {
+    String currentTimeText = new Date().format("yyyy-MM-dd hh:mm:ss",
+            TimeZone.getTimeZone("GMT+08:00"))
+    return currentTimeText != null ? currentTimeText : ""
+}
