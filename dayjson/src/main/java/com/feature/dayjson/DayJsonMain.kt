@@ -40,7 +40,7 @@ object DayJsonMain {
     fun main(args: Array<String>) {
         println("=== main begin ===")
         initCreateJsonFile()
-        handleBackupDayNewList()
+        //handleBackupDayNewList()
         handleDayNewList()
         compositeDisposable.clear()
         println("=== main end ===")
