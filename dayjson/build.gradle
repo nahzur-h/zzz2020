@@ -40,25 +40,7 @@ void exeDayJsonGitCmd() {
     println("exeDayJsonGitCmd called...  currentTimeText: " + currentTimeText)
     exeDayJsonGitAdd()
     exeDayJsonGitCommit(currentTimeText)
-    exeDayJsonGitFetch()
-    exeDayJsonGitRebaseMaster()
     exeDayJsonGitPushMaster()
-}
-
-void exeDayJsonGitFetch() {
-    println("exeDayJsonGitFetch called...")
-    exec {
-        workingDir '../'
-        commandLine 'git', 'fetch', 'origin'
-    }
-}
-
-void exeDayJsonGitRebaseMaster() {
-    println("exeDayJsonGitRebaseMaster called...")
-    exec {
-        workingDir '../'
-        commandLine 'git', 'rebase', 'origin/master'
-    }
 }
 
 void exeDayJsonGitAdd() {
